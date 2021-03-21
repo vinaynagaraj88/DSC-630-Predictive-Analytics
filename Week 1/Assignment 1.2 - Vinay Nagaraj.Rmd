@@ -1,0 +1,105 @@
+---
+title: "Assignment 1.2 - R Refresher"
+author: "Vinay Nagaraj"
+date: "March 17th 2021"
+output: 
+  html_document:
+  df_print: paged
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- Set working directory & load necessary packages --> 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+setwd("/Users/vinaynagaraj/My Docs/Masters/Sem 7, Predictive Analysis")
+library(readxl)
+library(ggplot2)
+```
+
+<!-- Load data from Bureau of Labor Statistics data -->
+```{r}
+state_M2019_dl <- read_excel("state_M2019_dl.xlsx")
+nebraska_2019_dl <- subset(state_M2019_dl, state_M2019_dl$area_title == "Nebraska")
+```
+
+***
+## 1. Import, Plot, Summarize, and Save Data
+  
+### **Summary of tot_emp:**
+```{r, warning=FALSE, message=FALSE}
+summary(as.numeric(nebraska_2019_dl$tot_emp))
+```
+
+### Mean hourly wage 
+```{r, warning=FALSE, message=FALSE}
+summary(as.numeric(nebraska_2019_dl$a_mean))
+```
+
+### **Histogram of Occupation Code**.
+```{r, warning=FALSE, message=FALSE}
+occ_code_12 <- substr(nebraska_2019_dl$occ_code,1,2)
+occ_code_12 <- as.numeric(occ_code_12)
+hist(occ_code_12, main ="Histogram of Occupation Code")
+```
+
+### **Box plot of Hourly mean wage**
+```{r, warning=FALSE, message=FALSE}
+boxplot(as.numeric(nebraska_2019_dl$h_mean), main='Hourly mean wage boxplot', ylab="Hourly mean Wage")
+```
+
+### **Density plot of Hourly mean wage**
+```{r, warning=FALSE, message=FALSE}
+ggplot(nebraska_2019_dl, 
+       aes(x = as.numeric(nebraska_2019_dl$h_mean), 
+           fill = substr(nebraska_2019_dl$occ_code,1,2))) +
+  geom_density(alpha = 0.4) +
+  labs(title = 'Salary distribution') +
+  xlab("Hourly Mean Salary")
+```
+
+### **Density plot of Hourly median wage**
+```{r, warning=FALSE, message=FALSE}
+ggplot(nebraska_2019_dl, 
+       aes(x = as.numeric(nebraska_2019_dl$h_mean), 
+           fill = substr(nebraska_2019_dl$occ_code,1,2))) +
+    geom_density(alpha = 0.4) +
+    labs(title = 'Salary distribution') +
+    xlab("Hourly Mean Salary")
+```
+
+
+##### **Write into CSV file**
+```{r}
+write.csv(nebraska_2019_dl, "nebraska_2019_dl.csv")
+```
+
+***
+  
+***
+## 2. Explore Some Bivariate Relations
+  
+### **Scatter plot between annual mean wage and occupation code**
+```{r, message=FALSE, warning=FALSE}
+plot(as.numeric(substr(nebraska_2019_dl$occ_code,1,2)), as.numeric(nebraska_2019_dl$a_mean),  main="Occupation Code v/s Annual Mean Wage - scatter plot", 
+     ylab="annual mean wage", xlab="Occupation Code")
+```
+***
+  
+***
+## 3. Organize a Data Report
+  
+### **Structure and Type of variables**
+```{r}
+str(nebraska_2019_dl)
+```
+
+### 1. **occ_code** is a chr field. First two positions represent occupation types and next four positions repersent sub-types.
+
+### 2. **tot_emp** is a nueric field. It represents total number of employess for each occupation codes.
+
+### 3. **h_mean** is a float field. It represents hourly mean wage for each occupation codes.
+
+### 4. **h=a_mean** is a float field. It represents annual mean wage for each occupation codes.
+***
